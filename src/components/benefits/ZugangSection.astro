@@ -1,5 +1,6 @@
 ---
 const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+const activeDays = new Set(["Mo", "We", "Fr"]);
 ---
 
 <section
@@ -16,26 +17,29 @@ const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
         class="font-medium text-[clamp(56px,9vw,112px)] leading-none tracking-[-0.03em] text-gold"
         style="text-shadow:0 0 40px rgba(217,189,133,.4), 0 0 6px rgba(255,255,255,.25)"
       >
-        Daily
+        3×/Week
       </p>
       <p class="text-[clamp(17px,2vw,20px)] leading-[1.6] text-ink/80 max-w-[42ch] mt-5">
         Access to the winning-product newsletter — otherwise reserved for
-        Gold customers. Products hand-picked by Manjeet every day.
+        Gold customers. Products hand-picked by Manjeet, three times a week.
       </p>
     </div>
 
     <div id="zugang-streak" class="flex flex-wrap justify-center md:justify-end gap-4 sm:gap-5">
       {
-        days.map((day) => (
-          <div class="streak-day flex flex-col items-center gap-2.5">
-            <span class="streak-dot relative flex items-center justify-center size-14 sm:size-16 rounded-full border border-gold/30 bg-navy-900">
-              <svg viewBox="0 0 24 24" fill="none" class="streak-check size-6 text-navy-950" aria-hidden="true">
-                <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-            <span class="text-[11px] tracking-[0.14em] uppercase text-ink/50">{day}</span>
-          </div>
-        ))
+        days.map((day) => {
+          const active = activeDays.has(day);
+          return (
+            <div class:list={["streak-day flex flex-col items-center gap-2.5", !active && "opacity-35"]} data-active={active ? "true" : undefined}>
+              <span class="streak-dot relative flex items-center justify-center size-14 sm:size-16 rounded-full border border-gold/30 bg-navy-900">
+                <svg viewBox="0 0 24 24" fill="none" class="streak-check size-6 text-navy-950" aria-hidden="true">
+                  <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span class="text-[11px] tracking-[0.14em] uppercase text-ink/50">{day}</span>
+            </div>
+          );
+        })
       }
     </div>
   </div>
@@ -59,8 +63,8 @@ const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const section = document.querySelector<HTMLElement>("#benefit-zugang");
-  const dots = document.querySelectorAll<HTMLElement>("#zugang-streak .streak-dot");
-  const checks = document.querySelectorAll<HTMLElement>("#zugang-streak .streak-check");
+  const dots = document.querySelectorAll<HTMLElement>('#zugang-streak .streak-day[data-active="true"] .streak-dot');
+  const checks = document.querySelectorAll<HTMLElement>('#zugang-streak .streak-day[data-active="true"] .streak-check');
 
   if (section && dots.length) {
     if (reduceMotion) {
@@ -83,9 +87,9 @@ const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
         tl.to(
           dot,
           { backgroundColor: "#d9bd85", borderColor: "#d9bd85", scale: 1.08, ease: "none" },
-          i * 0.11,
-        ).to(dot, { scale: 1, ease: "none" }, i * 0.11 + 0.05);
-        tl.to(checks[i], { opacity: 1, scale: 1, ease: "none" }, i * 0.11 + 0.02);
+          i * 0.28,
+        ).to(dot, { scale: 1, ease: "none" }, i * 0.28 + 0.08);
+        tl.to(checks[i], { opacity: 1, scale: 1, ease: "none" }, i * 0.28 + 0.04);
       });
     }
   }

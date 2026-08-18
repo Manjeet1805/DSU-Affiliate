@@ -1,0 +1,200 @@
+---
+import Icon from "../Icon.astro";
+---
+
+<section
+  id="benefit-bonus"
+  class="relative px-[clamp(20px,5vw,64px)] min-h-[100svh] flex flex-col justify-center py-7 md:py-0 md:h-screen md:block"
+>
+  <div class="relative z-10 max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center md:h-full">
+    <div data-reveal>
+      <p class="flex items-center gap-3 mb-4 text-[13px] tracking-[0.2em] uppercase text-gold">
+        <span class="w-9 h-px bg-gold block"></span>
+        Bonus
+      </p>
+      <p
+        class="font-medium text-[clamp(64px,10vw,128px)] leading-none tracking-[-0.03em] text-gold tabular-nums"
+        style="text-shadow:0 0 40px rgba(217,189,133,.4), 0 0 6px rgba(255,255,255,.25)"
+      >
+        300 $
+      </p>
+      <p class="text-[clamp(17px,2vw,20px)] leading-[1.6] text-ink/80 max-w-[42ch] mt-5">
+        Direct cash payout for every successful referral — paid out via
+        CopeCart.
+      </p>
+    </div>
+
+    <div
+      id="bonus-3d-slot"
+      class="relative h-[200px] sm:h-[300px] md:h-[520px]"
+    >
+      <div
+        class="bonus-3d-fallback absolute inset-0 flex items-center justify-center text-gold/50"
+        aria-hidden="true"
+      >
+        <Icon name="euro" class="size-16" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountLazyThree } from "../../lib/lazyThree";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const section = document.querySelector<HTMLElement>("#benefit-bonus");
+  const slot = document.querySelector<HTMLElement>("#bonus-3d-slot");
+
+  const REST = { x: -0.12, y: 0.18, z: -0.03 };
+  // Drives the rotation independent of whether the 3D scene is currently
+  // mounted, so the pinned ScrollTrigger (and its layout spacer) can live for
+  // the whole page lifetime — killing a pinned trigger on lazy-unmount would
+  // collapse its spacer and jump-scroll every section below it.
+  const rotationProxy = { ...REST };
+
+  if (section && !reduceMotion) {
+    // Start a little further off REST than before (still nowhere near
+    // edge-on/vertical) so the bills visibly rotate more as they settle
+    // into pose while scrolling.
+    rotationProxy.x = REST.x + 0.32;
+    rotationProxy.y = REST.y - 0.46;
+    rotationProxy.z = REST.z + 0.17;
+    gsap.to(rotationProxy, {
+      x: REST.x,
+      y: REST.y,
+      z: REST.z,
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: "+=45%",
+        scrub: 0.6,
+        pin: true,
+        anticipatePin: 1,
+      },
+    });
+  }
+
+  if (section && slot) {
+    mountLazyThree(slot, async (canvas) => {
+      const THREE = await import("three");
+
+      const fallback = slot.querySelector<HTMLElement>(".bonus-3d-fallback");
+      if (fallback) fallback.style.display = "none";
+
+      // Draw an on-brand banknote face onto a canvas texture — no external asset needed.
+      const texCanvas = document.createElement("canvas");
+      texCanvas.width = 1024;
+      texCanvas.height = 512;
+      const ctx = texCanvas.getContext("2d")!;
+
+      const bg = ctx.createLinearGradient(0, 0, 1024, 512);
+      bg.addColorStop(0, "#f3e7cd");
+      bg.addColorStop(1, "#d9bd85");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, 1024, 512);
+
+      ctx.strokeStyle = "rgba(122,93,35,0.16)";
+      ctx.lineWidth = 1;
+      for (let i = -512; i < 1024; i += 11) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + 512, 512);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = "#7a5d23";
+      ctx.lineWidth = 6;
+      ctx.strokeRect(16, 16, 1024 - 32, 512 - 32);
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(30, 30, 1024 - 60, 512 - 60);
+
+      ctx.beginPath();
+      ctx.arc(170, 256, 92, 0, Math.PI * 2);
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.font = "700 70px Georgia, serif";
+      ctx.fillStyle = "#7a5d23";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("$", 170, 266);
+
+      ctx.font = "700 180px Georgia, serif";
+      ctx.fillStyle = "#5c4419";
+      ctx.fillText("300", 630, 280);
+
+      ctx.font = "600 22px Arial, sans-serif";
+      ctx.fillStyle = "#7a5d23";
+      ctx.textAlign = "left";
+      ctx.fillText("D S U   P L A T I N U M", 60, 452);
+
+      const texture = new THREE.CanvasTexture(texCanvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.anisotropy = 4;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+      camera.position.set(0, 0, 7);
+
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+      scene.add(new THREE.AmbientLight(0xfff2d9, 0.9));
+      const key = new THREE.DirectionalLight(0xffe9bd, 1.4);
+      key.position.set(3, 4, 5);
+      scene.add(key);
+      const rim = new THREE.DirectionalLight(0x6fcf9e, 0.35);
+      rim.position.set(-4, -2, -3);
+      scene.add(rim);
+
+      const group = new THREE.Group();
+      const billGeo = new THREE.PlaneGeometry(3.6, 1.8);
+      const billMat = new THREE.MeshStandardMaterial({
+        map: texture,
+        roughness: 0.55,
+        metalness: 0.12,
+        side: THREE.DoubleSide,
+      });
+      [
+        { x: 0.07, y: -0.14, z: -0.14, rot: -0.06 },
+        { x: -0.04, y: -0.06, z: -0.07, rot: 0.035 },
+        { x: 0, y: 0, z: 0, rot: 0 },
+      ].forEach((o) => {
+        const bill = new THREE.Mesh(billGeo, billMat);
+        bill.position.set(o.x, o.y, o.z);
+        bill.rotation.z = o.rot;
+        group.add(bill);
+      });
+      scene.add(group);
+
+      const resize = (w: number, h: number) => {
+        if (!w || !h) return;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      resize(slot.clientWidth, slot.clientHeight);
+      group.rotation.set(rotationProxy.x, rotationProxy.y, rotationProxy.z);
+
+      return {
+        renderer,
+        onFrame: () => {
+          group.rotation.set(rotationProxy.x, rotationProxy.y, rotationProxy.z);
+          renderer.render(scene, camera);
+        },
+        onResize: resize,
+        dispose: () => {
+          billGeo.dispose();
+          billMat.dispose();
+          texture.dispose();
+          renderer.dispose();
+        },
+      };
+    });
+  }
+</script>

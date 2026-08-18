@@ -1,0 +1,67 @@
+---
+import ButtonPrimary from "./ButtonPrimary.astro";
+import Icon from "./Icon.astro";
+import { Image } from "astro:assets";
+import portraitImg from "../assets/images/manjeet-cta-portrait.avif";
+import lifestyleImg from "../assets/images/manjeet-lifestyle.avif";
+---
+
+<section
+  id="partner-werden"
+  class="relative px-[clamp(20px,5vw,64px)] pt-[clamp(64px,11vh,120px)] pb-[clamp(48px,8vh,80px)] max-w-[1120px] mx-auto scroll-mt-20"
+>
+  <div
+    data-reveal
+    class="relative overflow-hidden rounded-[20px] border border-gold/50 p-[clamp(28px,5vw,56px)] text-ink shadow-[0_0_90px_rgba(217,189,133,0.18)]"
+    style="background:linear-gradient(160deg, var(--color-navy-700) 0%, var(--color-navy-950) 100%)"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0"
+      style="background:radial-gradient(520px 300px at 88% -10%, rgba(217,189,133,.22), transparent 68%), radial-gradient(420px 300px at 4% 110%, rgba(47,163,115,.16), transparent 70%)"
+    >
+    </div>
+
+    <div class="relative grid gap-8 sm:gap-10 items-center">
+      <div>
+        <h2 class="font-medium text-[clamp(28px,4.6vw,46px)] leading-[1.1] tracking-[-0.018em] m-0 max-w-[22ch] text-ink">
+          Ready? Then become a partner now.
+        </h2>
+        <p class="text-[16.5px] leading-[1.62] text-ink/74 max-w-[52ch] mt-5">
+          No risk, no ongoing costs. You just refer what you already know.
+        </p>
+        <div class="flex flex-wrap items-center gap-4 mt-8.5">
+          <ButtonPrimary href="https://www.copecart.com/" target="_blank" rel="noopener">
+            Become a Partner Now
+          </ButtonPrimary>
+          <span class="inline-flex items-center gap-2 text-[14.5px] text-ink/60">
+            <Icon name="lock" class="size-4 text-emerald-hi" />
+            Handled via CopeCart
+          </span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-4.5 pt-5 sm:pt-7 border-t border-ink/12">
+        <Image
+          src={portraitImg}
+          alt="Manjeet Singh Sangha, founder of DSU Platinum, in a personal conversation"
+          width={132}
+          height={132}
+          class="shrink-0 size-16.5 rounded-full object-cover border border-gold/60 shadow-[0_0_24px_rgba(217,189,133,0.35)]"
+        />
+        <p class="text-[15px] leading-[1.6] text-ink/74 m-0 max-w-[48ch] flex-1 min-w-[220px]">
+          "You refer me to others — and in return, you get something real.
+          It's that simple."{" "}
+          <span class="text-ink/60">— Manjeet Singh Sangha, DSU Platinum</span>
+        </p>
+        <Image
+          src={lifestyleImg}
+          alt="Manjeet Singh Sangha off-duty in a sports car — one of the tangible results of DSU Platinum"
+          width={112}
+          height={112}
+          class="shrink-0 size-14 rounded-lg object-cover border border-gold/34"
+        />
+      </div>
+    </div>
+  </div>
+</section>

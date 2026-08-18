@@ -1,0 +1,141 @@
+---
+import ButtonPrimary from "./ButtonPrimary.astro";
+import Icon from "./Icon.astro";
+import { getImage } from "astro:assets";
+import heroDesktopSrc from "../assets/images/hero_desktop.webp";
+import heroMobileSrc from "../assets/images/hero_mobile.webp";
+
+const heroDesktop = await getImage({
+  src: heroDesktopSrc,
+  width: 1920,
+  format: "webp",
+  quality: 82,
+});
+const heroMobile = await getImage({
+  src: heroMobileSrc,
+  width: 1000,
+  format: "webp",
+  quality: 82,
+});
+---
+
+<div class="relative w-full h-[min(calc(100vw*1.4998),88vh)] min-h-[440px] sm:h-[92vh] sm:min-h-[640px] overflow-hidden">
+  <picture>
+    <source media="(min-width: 640px)" srcset={heroDesktop.src} />
+    <img
+      src={heroMobile.src}
+      alt="Manjeet Singh Sangha, founder of DSU Platinum"
+      loading="eager"
+      fetchpriority="high"
+      class="absolute inset-0 size-full object-cover object-[35%_center] sm:object-[75%_70%]"
+    />
+  </picture>
+
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 sm:hidden"
+    style="background:linear-gradient(180deg, rgba(5,6,10,.6) 0%, rgba(5,6,10,.5) 45%, rgba(5,6,10,.68) 100%)"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 hidden sm:block"
+    style="background:linear-gradient(100deg, rgba(5,6,10,.78) 0%, rgba(5,6,10,.6) 32%, rgba(5,6,10,.28) 60%, rgba(5,6,10,.16) 100%)"
+  >
+  </div>
+
+  <div
+    data-parallax="0.18"
+    aria-hidden="true"
+    class="pointer-events-none absolute -top-60 -right-40 size-[700px] rounded-full will-change-transform"
+    style="background:radial-gradient(closest-side, rgba(217,189,133,.16), rgba(217,189,133,.03) 55%, transparent 72%)"
+  >
+  </div>
+
+  <section class="relative z-10 h-full flex flex-col justify-start pt-[clamp(96px,12vh,150px)] px-[clamp(20px,5vw,64px)] max-w-[1120px] mx-auto">
+    <p
+      data-reveal
+      data-reveal-delay="650"
+      class="flex items-center gap-3 mb-5.5 text-[12.5px] tracking-[0.18em] uppercase text-gold"
+      style="text-shadow:0 2px 16px rgba(0,0,0,.7)"
+    >
+      <span class="w-9 h-px bg-gold block"></span>
+      Affiliate Partner Program
+    </p>
+
+    <h1
+      class="hero-unfold font-medium text-[clamp(40px,7.4vw,80px)] leading-[1.06] tracking-[-0.02em] m-0 max-w-[16ch]"
+      style="text-shadow:0 4px 30px rgba(0,0,0,.65)"
+    >
+      Make money{" "}
+      <span
+        class="text-gold"
+        style="text-shadow:0 4px 30px rgba(0,0,0,.5), 0 0 40px rgba(217,189,133,.6), 0 0 8px rgba(255,255,255,.3)"
+      >
+        on the side?
+      </span>
+    </h1>
+
+    <p
+      data-reveal
+      data-reveal-delay="700"
+      class="text-[clamp(16.5px,2vw,19px)] leading-[1.62] text-ink/90 max-w-[52ch] mt-6.5"
+      style="text-shadow:0 2px 16px rgba(0,0,0,.7)"
+    >
+      This is an affiliate program: you refer people to Manjeet, and in
+      return you get real benefits worth having. Keep scrolling to see
+      exactly what's waiting for you.
+    </p>
+
+    <div
+      data-reveal
+      data-reveal-delay="750"
+      class="flex flex-wrap items-center justify-center sm:justify-start gap-4 mt-9.5"
+    >
+      <ButtonPrimary href="https://www.copecart.com/" target="_blank" rel="noopener">Become a Partner Now</ButtonPrimary>
+      <span
+        class="inline-flex items-center gap-2 text-[14.5px] text-ink/90"
+        style="text-shadow:0 2px 16px rgba(0,0,0,.7)"
+      >
+        <Icon name="shield-check" class="size-[17px] text-emerald-hi" />
+        Free, via CopeCart
+      </span>
+    </div>
+  </section>
+
+  <div
+    aria-hidden="true"
+    class="hidden sm:flex absolute bottom-7 left-1/2 -translate-x-1/2 flex-col items-center gap-2.5 text-ink/80"
+  >
+    <Icon name="mouse" class="size-[22px] animate-breathe" />
+    <Icon name="chevron-down" class="size-[15px] animate-scroll-hint" />
+  </div>
+</div>
+
+<style>
+  .hero-unfold {
+    animation: hero-unfold 750ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+
+  @keyframes hero-unfold {
+    from {
+      clip-path: inset(0 0 100% 0);
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      clip-path: inset(0 0 0% 0);
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-unfold {
+      animation: none;
+      opacity: 1;
+      clip-path: none;
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,147 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "DSU Platinum Partner Program — Make Money on the Side",
+  description = "Refer Manjeet Singh Sangha and get a $300 bonus, $100 agency credit, and two personal 1:1 calls. Free sign-up via CopeCart.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0a0c14" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+  </head>
+  <body class="bg-navy-950 text-ink selection:bg-gold/30">
+    <slot />
+
+    <script>
+      import { gsap } from "gsap";
+      import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      const reduceMotion = matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      // Border-glow buttons: track the cursor within each button so the
+      // glow ring (see .btn-glow / .btn-glow-light in global.css) can trace
+      // whichever edge is nearest.
+      const glowEls = Array.from(
+        document.querySelectorAll<HTMLElement>(".btn-glow"),
+      );
+      glowEls.forEach((el) => {
+        el.addEventListener("pointermove", (e) => {
+          const rect = el.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const cx = rect.width / 2;
+          const cy = rect.height / 2;
+          const dx = x - cx;
+          const dy = y - cy;
+
+          const kx = dx !== 0 ? cx / Math.abs(dx) : Infinity;
+          const ky = dy !== 0 ? cy / Math.abs(dy) : Infinity;
+          const edge = Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+
+          let angle = 0;
+          if (dx !== 0 || dy !== 0) {
+            angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+            if (angle < 0) angle += 360;
+          }
+
+          el.style.setProperty("--edge-proximity", `${(edge * 100).toFixed(3)}`);
+          el.style.setProperty("--cursor-angle", `${angle.toFixed(3)}deg`);
+        });
+      });
+
+      const revealEls = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-reveal]"),
+      );
+      revealEls.forEach((el) => {
+        const delay = el.dataset.revealDelay;
+        if (delay) el.style.transitionDelay = `${delay}ms`;
+      });
+
+      if (reduceMotion) {
+        revealEls.forEach((el) => el.classList.add("is-visible"));
+        document
+          .querySelectorAll<HTMLElement>("#steps-progress")
+          .forEach((el) => (el.style.transform = "scaleY(1)"));
+      } else {
+        // Hero background blobs drift at a slower rate than native scroll.
+        const parallaxEls = Array.from(
+          document.querySelectorAll<HTMLElement>("[data-parallax]"),
+        );
+        if (parallaxEls.length) {
+          let ticking = false;
+          const updateParallax = () => {
+            const y = window.scrollY;
+            parallaxEls.forEach((el) => {
+              const factor = parseFloat(el.dataset.parallax || "0");
+              el.style.transform = `translate3d(0, ${(y * factor).toFixed(1)}px, 0)`;
+            });
+            ticking = false;
+          };
+          window.addEventListener(
+            "scroll",
+            () => {
+              if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(updateParallax);
+              }
+            },
+            { passive: true },
+          );
+        }
+
+        // Sections fade + slide up as they enter, batched for one shared observer.
+        if (revealEls.length) {
+          ScrollTrigger.batch(revealEls, {
+            start: "top 88%",
+            once: true,
+            onEnter: (batch) =>
+              batch.forEach((el) => el.classList.add("is-visible")),
+          });
+        }
+
+        // Steps line: scroll-scrubbed gold-to-emerald glow.
+        const stepsWrap = document.querySelector<HTMLElement>("#steps-track-wrap");
+        const stepsLine = document.querySelector<HTMLElement>("#steps-progress");
+        if (stepsWrap && stepsLine) {
+          gsap.to(stepsLine, {
+            scaleY: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: stepsWrap,
+              start: "top 75%",
+              end: "bottom 65%",
+              scrub: 0.4,
+            },
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

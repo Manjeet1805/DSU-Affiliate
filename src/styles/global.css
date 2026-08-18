@@ -1,0 +1,167 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+
+  --color-navy-950: #05060a;
+  --color-navy-900: #0a0c14;
+  --color-navy-800: #10131f;
+  --color-navy-700: #171b2a;
+
+  --color-ink: #f5f1e8;
+  --color-white-hi: #ffffff;
+
+  --color-gold: #d9bd85;
+  --color-gold-hi: #f3e7cd;
+
+  --color-emerald: #2fa373;
+  --color-emerald-hi: #79ddae;
+
+  --animate-breathe: breathe 2.8s ease-in-out infinite;
+  --animate-scroll-hint: scroll-hint 2s ease-in-out infinite;
+
+  @keyframes breathe {
+    0%, 100% { opacity: .55; }
+    50% { opacity: 1; }
+  }
+  @keyframes scroll-hint {
+    0% { transform: translateY(-6px); opacity: 0; }
+    40% { opacity: 1; }
+    100% { transform: translateY(10px); opacity: 0; }
+  }
+}
+
+html {
+  background:
+    radial-gradient(1200px 700px at 50% -8%, rgba(217,189,133,.08), transparent 62%),
+    linear-gradient(180deg, var(--color-navy-900) 0%, var(--color-navy-950) 55%, #000 100%);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+::selection {
+  background: rgba(217, 189, 133, .28);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgba(217, 189, 133, .22);
+}
+
+/* Banknote watermark texture, used behind benefit cards */
+.watermark {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(217, 189, 133, .07) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(-45deg, rgba(217, 189, 133, .06) 0 1px, transparent 1px 9px),
+    radial-gradient(160px 160px at 82% 12%, rgba(217, 189, 133, .1), transparent 70%);
+}
+
+/* Scroll-reveal: fade + slide-up, staggered via inline transition-delay */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s cubic-bezier(.22, .61, .36, 1), transform .7s cubic-bezier(.22, .61, .36, 1);
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/*
+ * Border-glow: a soft gold light that traces whichever edge sits nearest the
+ * cursor. Ported from a card-hover component to sit directly on top of our
+ * existing filled/outline buttons (rather than owning their background), so
+ * only the cursor-tracking glow ring — not the multi-hue mesh-gradient border
+ * from the original — was kept, recolored to this site's gold/black/white
+ * palette. `--edge-proximity` and `--cursor-angle` are set from JS in
+ * Layout.astro on pointermove.
+ */
+.btn-glow {
+  position: relative;
+  z-index: 0;
+  --edge-proximity: 0;
+  --cursor-angle: 45deg;
+  --edge-sensitivity: 15;
+  --glow-padding: 22px;
+
+  --glow-color: hsl(42deg 78% 90% / 100%);
+  --glow-color-60: hsl(42deg 78% 90% / 60%);
+  --glow-color-50: hsl(42deg 78% 90% / 50%);
+  --glow-color-40: hsl(42deg 78% 90% / 40%);
+  --glow-color-30: hsl(42deg 78% 90% / 30%);
+  --glow-color-20: hsl(42deg 78% 90% / 20%);
+  --glow-color-10: hsl(42deg 78% 90% / 10%);
+}
+
+.btn-glow-light {
+  content: "";
+  position: absolute;
+  inset: calc(var(--glow-padding) * -1);
+  border-radius: inherit;
+  pointer-events: none;
+  /* In front of the button's own fill/border (not behind), so the glow
+     reads as an added rim-light even on the solid gold ButtonPrimary,
+     rather than blending into a near-identical background color. It's
+     confined to a thin band near the edges by the box-shadow blur radii
+     below, so it doesn't obscure the button's label. */
+  z-index: 1;
+  mask-image: conic-gradient(
+    from var(--cursor-angle) at center,
+    black 3%,
+    transparent 16%,
+    transparent 84%,
+    black 97%
+  );
+  /* max() guarantees a strong, unmistakable glow on :hover even before the
+     first pointermove has landed (or if JS is slow to attach), instead of
+     relying purely on the JS-computed --edge-proximity value. */
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+.btn-glow:hover .btn-glow-light {
+  opacity: max(0.75, calc((var(--edge-proximity) - var(--edge-sensitivity)) / (100 - var(--edge-sensitivity))));
+  transition: opacity 0.25s ease-out;
+}
+.btn-glow-light::before {
+  content: "";
+  position: absolute;
+  inset: var(--glow-padding);
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1.5px var(--glow-color),
+    inset 0 0 3px 0 var(--glow-color-60),
+    inset 0 0 6px 0 var(--glow-color-50),
+    inset 0 0 12px 0 var(--glow-color-40),
+    inset 0 0 22px 0 var(--glow-color-30),
+    0 0 6px 1px var(--glow-color-60),
+    0 0 16px 2px var(--glow-color-40),
+    0 0 36px 4px var(--glow-color-20),
+    0 0 64px 6px var(--glow-color-10);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-glow-light {
+    transition: none;
+  }
+}

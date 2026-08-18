@@ -1,0 +1,133 @@
+---
+import Icon from "./Icon.astro";
+import { getImage } from "astro:assets";
+import posterSrc from "../assets/images/manjeet-video-poster.avif";
+
+const poster = await getImage({
+  src: posterSrc,
+  width: 1280,
+  height: 720,
+  format: "webp",
+  quality: 82,
+});
+---
+
+<section id="video-showcase" class="relative bg-[#020304] px-[clamp(20px,5vw,64px)] py-[clamp(56px,10vh,104px)] max-w-[1120px] mx-auto">
+  <div
+    aria-hidden="true"
+    class="h-px mb-[clamp(56px,10vh,104px)]"
+    style="background:linear-gradient(to right, transparent, rgba(245,241,232,.12) 48px calc(100% - 48px), transparent)"
+  >
+  </div>
+
+  <h2
+    data-reveal
+    class="font-medium text-[clamp(28px,4.4vw,44px)] leading-[1.14] tracking-[-0.015em] m-0 max-w-[22ch]"
+  >
+    See for yourself how it works
+  </h2>
+  <p
+    data-reveal
+    data-reveal-delay="90"
+    class="text-[16.5px] leading-[1.62] text-ink/74 max-w-[50ch] mt-5"
+  >
+    In just a few minutes, Manjeet explains how the referral works and what
+    you get in return — cash, Noirlab credit, newsletter access, and the two
+    calls.
+  </p>
+
+  <figure data-reveal data-reveal-delay="180" class="mt-[clamp(32px,5vh,52px)]">
+    <div
+      id="video-frame"
+      class="relative aspect-video rounded-2xl overflow-hidden border border-gold/40 shadow-[0_24px_70px_rgba(217,189,133,0.22),0_0_100px_rgba(217,189,133,0.12)] bg-navy-950"
+    >
+      <video
+        id="showcase-video"
+        class="absolute inset-0 size-full object-cover"
+        data-poster={poster.src}
+        preload="none"
+        playsinline
+        data-src-mp4="/videos/dsu-affiliate-introduction.mp4"
+        data-src-webm="/videos/dsu-affiliate-introduction.webm"
+      >
+      </video>
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 pointer-events-none"
+        style="background:radial-gradient(600px 300px at 50% 42%, rgba(217,189,133,.16), transparent 70%)"
+      >
+      </div>
+      <button
+        id="video-play-button"
+        type="button"
+        aria-label="Play video: Manjeet explains the DSU Platinum partner program"
+        class="absolute inset-0 flex items-center justify-center bg-transparent border-0 p-0 cursor-pointer group"
+      >
+        <span
+          class="inline-flex items-center justify-center size-18 rounded-full border border-gold bg-gold/22 text-gold-hi
+            shadow-[0_0_40px_rgba(217,189,133,0.4)]
+            transition-[transform,background-color,box-shadow] duration-300 ease-out
+            group-hover:scale-[1.06] group-hover:bg-gold/30 group-hover:shadow-[0_0_60px_rgba(217,189,133,0.6)]"
+        >
+          <Icon name="play" class="size-7 translate-x-0.5" />
+        </span>
+      </button>
+    </div>
+    <figcaption class="text-[14.5px] leading-[1.6] text-ink/60 mt-4.5 max-w-[56ch]">
+      We'll cover exactly these questions in your two personal
+      30-minute Zoom calls.
+    </figcaption>
+  </figure>
+</section>
+
+<script>
+  const section = document.querySelector<HTMLElement>("#video-showcase");
+  const video = document.querySelector<HTMLVideoElement>("#showcase-video");
+  const playButton = document.querySelector<HTMLButtonElement>("#video-play-button");
+
+  if (section && video && playButton) {
+    // Poster image is only requested once the section actually scrolls into
+    // view — it stays out of the DOM's initial fetch set entirely until then.
+    const posterObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.poster = video.dataset.poster ?? "";
+            posterObserver.disconnect();
+          }
+        });
+      },
+      { rootMargin: "200px" },
+    );
+    posterObserver.observe(section);
+
+    let sourcesLoaded = false;
+    const loadSources = () => {
+      if (sourcesLoaded) return;
+      sourcesLoaded = true;
+      const webm = document.createElement("source");
+      webm.src = video.dataset.srcWebm ?? "";
+      webm.type = "video/webm";
+      const mp4 = document.createElement("source");
+      mp4.src = video.dataset.srcMp4 ?? "";
+      mp4.type = "video/mp4";
+      video.append(webm, mp4);
+      video.preload = "auto";
+      video.load();
+    };
+
+    // The video file itself is only fetched once the user actually presses play.
+    playButton.addEventListener("click", () => {
+      loadSources();
+      video.controls = true;
+      playButton.style.display = "none";
+      video.play();
+    });
+
+    video.addEventListener("ended", () => {
+      video.controls = false;
+      video.currentTime = 0;
+      playButton.style.display = "flex";
+    });
+  }
+</script>

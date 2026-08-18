@@ -1,0 +1,300 @@
+---
+import BonusSection from "./benefits/BonusSection.astro";
+import GuthabenSection from "./benefits/GuthabenSection.astro";
+import ZugangSection from "./benefits/ZugangSection.astro";
+import ZeitSection from "./benefits/ZeitSection.astro";
+---
+
+<div class="relative overflow-hidden bg-navy-950">
+  <div class="watermark absolute inset-0 pointer-events-none opacity-30" aria-hidden="true"></div>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute top-[2%] -left-44 size-[800px] rounded-full"
+    style="background:radial-gradient(closest-side, rgba(217,189,133,.15), transparent 70%)"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute top-[20%] -right-44 size-[560px] rounded-full"
+    style="background:radial-gradient(closest-side, rgba(139,126,224,.11), transparent 70%)"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute top-[44%] -left-48 size-[600px] rounded-full"
+    style="background:radial-gradient(closest-side, rgba(217,189,133,.14), transparent 70%)"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute top-[66%] -right-40 size-[560px] rounded-full"
+    style="background:radial-gradient(closest-side, rgba(139,126,224,.1), transparent 70%)"
+  >
+  </div>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute top-[90%] left-1/2 -translate-x-1/2 size-[700px] rounded-full"
+    style="background:radial-gradient(closest-side, rgba(217,189,133,.13), transparent 70%)"
+  >
+  </div>
+
+  <div class="relative z-10 px-[clamp(20px,5vw,64px)] pt-[clamp(56px,9vh,88px)] pb-[clamp(24px,4vh,40px)] max-w-[1120px] mx-auto">
+    <p
+      data-reveal
+      class="flex items-center gap-3 mb-4.5 text-[12.5px] tracking-[0.18em] uppercase text-gold"
+    >
+      <span class="w-9 h-px bg-gold block"></span>
+      Your Four Benefits
+    </p>
+    <h2
+      data-reveal
+      data-reveal-delay="80"
+      class="font-medium text-[clamp(28px,4.4vw,44px)] leading-[1.14] tracking-[-0.015em] m-0 max-w-[24ch]"
+    >
+      What you get for every successful referral
+    </h2>
+  </div>
+
+  <div id="benefits-track" class="relative z-10">
+    <div id="connecting-light" class="pointer-events-none fixed inset-0 z-[5]" aria-hidden="true">
+      <div class="connecting-segment"></div>
+      <div class="connecting-segment"></div>
+      <div class="connecting-segment"></div>
+
+      <div id="connecting-light-dot" class="absolute left-1/2 top-0 size-0">
+        <span class="dot-glow block absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 size-2 rounded-full bg-gold"></span>
+      </div>
+    </div>
+
+    <BonusSection />
+    <GuthabenSection />
+    <ZugangSection />
+    <ZeitSection />
+  </div>
+</div>
+
+<style>
+  /*
+   * Each segment represents one gap between two consecutive benefit
+   * sections. Height/position are driven every scroll frame via a
+   * transform (scaleY from a top origin + translateY) rather than
+   * top/height, so resizing stays compositor-only. Visible only while
+   * its gap currently has non-zero height in the viewport (see script).
+   */
+  .connecting-segment {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 1.5px);
+    width: 3px;
+    height: 100vh;
+    overflow: visible;
+    transform: translateY(0) scaleY(0);
+    transform-origin: top center;
+    background: linear-gradient(
+      180deg,
+      rgba(217, 189, 133, 0.05) 0%,
+      rgba(217, 189, 133, 0.6) 50%,
+      rgba(217, 189, 133, 0.05) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .connecting-segment.is-active {
+    opacity: 1;
+  }
+
+  .dot-glow {
+    opacity: 0.9;
+    overflow: visible;
+    box-shadow:
+      0 0 16px 4px rgba(217, 189, 133, 0.75),
+      0 0 44px 14px rgba(217, 189, 133, 0.4);
+  }
+  #connecting-light-dot {
+    opacity: 0;
+    overflow: visible;
+    transition: opacity 0.25s ease;
+  }
+  #connecting-light-dot.is-active {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .connecting-segment,
+    #connecting-light-dot {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const segments = Array.from(document.querySelectorAll<HTMLElement>(".connecting-segment"));
+  const dot = document.querySelector<HTMLElement>("#connecting-light-dot");
+
+  // Each benefit section pins for exactly the scroll distance its own
+  // spacer reserves, so consecutive section *boxes* always hand off with
+  // zero gap — there's no empty document space between them to measure.
+  // The actual empty space the line should occupy is around each
+  // section's own vertically-centered content (its [data-reveal] text
+  // block + visual/icon slot), both while a section is mid-transition
+  // and while it's fully settled — so gaps are measured between each
+  // section's content bounds, not its outer box.
+  const sectionContentDefs: [string, string][] = [
+    ["#benefit-bonus", "#bonus-3d-slot"],
+    ["#benefit-guthaben", "#guthaben-icon-slot"],
+    ["#benefit-zugang", "#zugang-streak"],
+    ["#benefit-zeit", "#zeit-avatars"],
+  ];
+  const sectionContentEls = sectionContentDefs.map(([secId, visId]) => ({
+    reveal: document.querySelector<HTMLElement>(`${secId} [data-reveal]`),
+    visual: document.querySelector<HTMLElement>(visId),
+  }));
+
+  const getContentBounds = (entry: { reveal: HTMLElement | null; visual: HTMLElement | null }) => {
+    const rects = [entry.reveal, entry.visual]
+      .filter((el): el is HTMLElement => !!el)
+      .map((el) => el.getBoundingClientRect());
+    if (!rects.length) return null;
+    return {
+      top: Math.min(...rects.map((r) => r.top)),
+      bottom: Math.max(...rects.map((r) => r.bottom)),
+    };
+  };
+
+  // Extra breathing room subtracted from each gap's *lower* bound (the
+  // upcoming section's content top), so the line stops a bit short of the
+  // text instead of touching it. Only the last gap (into "1:1 Zeit") needs
+  // it right now.
+  const endBuffers = [0, 0, 32];
+
+  // Two adjacent gaps can briefly be visible at once (e.g. the tail of
+  // gap i above a short section's centered content, and the head of gap
+  // i+1 below it). The dot stays with the *earliest* (lowest-index)
+  // active gap until that one fully closes, rather than handing off the
+  // moment a later gap opens — handing off early cuts the earlier gap's
+  // sweep short mid-line, reading as a jump straight to the newly active
+  // gap's position.
+  //
+  // Because gap i+1 can sit active-but-unowned for a while before it's
+  // finally shown, its "raw" stateless progress (see below) may already
+  // be well above 0 the moment it becomes owner — displaying it directly
+  // would start the dot mid-line instead of at the top. So each gap
+  // remembers the raw progress value it had at the exact frame it became
+  // owner, and the displayed progress is rescaled against *that*: 0 at
+  // hand-off, 1 once the raw value reaches its own max (1) — still a
+  // smooth, monotonic function of the same underlying raw progress, just
+  // re-based to the moment the gap actually starts being shown.
+  const ownerStartProgress: (number | null)[] = segments.map(() => null);
+  let lastOwnerIndex = -1;
+
+  if (!reduceMotion && segments.length && dot) {
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      const bounds = sectionContentEls.map(getContentBounds);
+      const vh = window.innerHeight;
+
+      type Frame = { visTop: number; visBottom: number; rawMid: number };
+      const frames: (Frame | null)[] = [];
+      let ownerIndex = -1;
+
+      for (let i = 0; i < segments.length; i++) {
+        const seg = segments[i];
+        const a = bounds[i];
+        const b = bounds[i + 1];
+        if (!seg || !a || !b) {
+          frames.push(null);
+          continue;
+        }
+
+        const rawTop = a.bottom;
+        const rawBottom = b.top - (endBuffers[i] ?? 0);
+
+        // Clamp to the visible viewport so an off-screen gap (e.g. content
+        // not yet scrolled into view) isn't flagged as visibly active.
+        const visTop = Math.max(rawTop, 0);
+        const visBottom = Math.min(rawBottom, vh);
+        const visHeight = visBottom - visTop;
+
+        seg.style.transform = `translateY(${visTop}px) scaleY(${Math.max(visHeight, 0) / vh})`;
+
+        if (visHeight > 1) {
+          seg.classList.add("is-active");
+          frames.push({ visTop, visBottom, rawMid: (rawTop + rawBottom) / 2 });
+          // Only claim ownership if no earlier (lower-index) gap already
+          // has it this frame.
+          if (ownerIndex === -1) ownerIndex = i;
+        } else {
+          seg.classList.remove("is-active");
+          frames.push(null);
+          // Reset so the next time this gap opens it re-captures a fresh
+          // hand-off reference instead of reusing a stale one.
+          ownerStartProgress[i] = null;
+        }
+      }
+
+      let activeDotY: number | null = null;
+
+      if (ownerIndex !== -1) {
+        const frame = frames[ownerIndex] as Frame;
+
+        // Maps the gap's raw (unclamped) midpoint directly against the
+        // fixed viewport height — rawMid ≈ vh (own bottom edge) at the
+        // gap's most-closed extreme and ≈ 0 (top edge) at the other, so
+        // this is a stateless, monotonic 0→1 read with no reference to
+        // its own history. A running-minimum-based version was tried
+        // instead (progress = distance already covered ÷ distance
+        // covered so far) but that self-referential denominator matches
+        // the numerator on every frame during a monotonic decline —
+        // collapsing progress to 1 almost immediately after a gap opens
+        // instead of pacing it across the gap's whole visible lifetime.
+        const rawProgress = 1 - Math.min(Math.max(frame.rawMid / vh, 0), 1);
+
+        if (ownerIndex !== lastOwnerIndex || ownerStartProgress[ownerIndex] === null) {
+          ownerStartProgress[ownerIndex] = rawProgress;
+        }
+        const start = ownerStartProgress[ownerIndex] as number;
+        const denom = 1 - start;
+        const localProgress = denom > 0 ? Math.min(Math.max((rawProgress - start) / denom, 0), 1) : 1;
+
+        let y = frame.visTop + localProgress * (frame.visBottom - frame.visTop);
+
+        // Keep the dot's glow (~50px radius) fully inside the viewport
+        // rather than sliding into the top/bottom edge, where a
+        // sustained stretch of it would otherwise render off-screen.
+        // Only pull it inward when the segment is tall enough to allow
+        // that without detaching the dot from its own line.
+        const dotEdgeMargin = 50;
+        const marginTop = Math.max(frame.visTop, dotEdgeMargin);
+        const marginBottom = Math.min(frame.visBottom, vh - dotEdgeMargin);
+        if (marginBottom > marginTop) {
+          y = Math.min(Math.max(y, marginTop), marginBottom);
+        }
+
+        activeDotY = y;
+      }
+
+      lastOwnerIndex = ownerIndex;
+
+      if (activeDotY !== null) {
+        dot.style.transform = `translateY(${activeDotY}px)`;
+        dot.classList.add("is-active");
+      } else {
+        dot.classList.remove("is-active");
+      }
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+  }
+</script>

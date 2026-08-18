@@ -1,0 +1,92 @@
+---
+const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+---
+
+<section
+  id="benefit-zugang"
+  class="relative px-[clamp(20px,5vw,64px)] min-h-[100svh] flex flex-col justify-center py-7 md:py-0 md:h-screen md:block"
+>
+  <div class="relative z-10 max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center md:h-full">
+    <div data-reveal>
+      <p class="flex items-center gap-3 mb-4 text-[13px] tracking-[0.2em] uppercase text-gold">
+        <span class="w-9 h-px bg-gold block"></span>
+        Access
+      </p>
+      <p
+        class="font-medium text-[clamp(56px,9vw,112px)] leading-none tracking-[-0.03em] text-gold"
+        style="text-shadow:0 0 40px rgba(217,189,133,.4), 0 0 6px rgba(255,255,255,.25)"
+      >
+        Daily
+      </p>
+      <p class="text-[clamp(17px,2vw,20px)] leading-[1.6] text-ink/80 max-w-[42ch] mt-5">
+        Access to the winning-product newsletter — otherwise reserved for
+        Gold customers. Products hand-picked by Manjeet every day.
+      </p>
+    </div>
+
+    <div id="zugang-streak" class="flex flex-wrap justify-center md:justify-end gap-4 sm:gap-5">
+      {
+        days.map((day) => (
+          <div class="streak-day flex flex-col items-center gap-2.5">
+            <span class="streak-dot relative flex items-center justify-center size-14 sm:size-16 rounded-full border border-gold/30 bg-navy-900">
+              <svg viewBox="0 0 24 24" fill="none" class="streak-check size-6 text-navy-950" aria-hidden="true">
+                <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <span class="text-[11px] tracking-[0.14em] uppercase text-ink/50">{day}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .streak-dot {
+    transition: none;
+  }
+  .streak-check {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const section = document.querySelector<HTMLElement>("#benefit-zugang");
+  const dots = document.querySelectorAll<HTMLElement>("#zugang-streak .streak-dot");
+  const checks = document.querySelectorAll<HTMLElement>("#zugang-streak .streak-check");
+
+  if (section && dots.length) {
+    if (reduceMotion) {
+      gsap.set(dots, { backgroundColor: "#d9bd85", borderColor: "#d9bd85" });
+      gsap.set(checks, { opacity: 1, scale: 1 });
+    } else {
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: isDesktop ? "+=100%" : "+=45%",
+          scrub: 0.6,
+          pin: true,
+          anticipatePin: 1,
+        },
+      });
+
+      dots.forEach((dot, i) => {
+        tl.to(
+          dot,
+          { backgroundColor: "#d9bd85", borderColor: "#d9bd85", scale: 1.08, ease: "none" },
+          i * 0.11,
+        ).to(dot, { scale: 1, ease: "none" }, i * 0.11 + 0.05);
+        tl.to(checks[i], { opacity: 1, scale: 1, ease: "none" }, i * 0.11 + 0.02);
+      });
+    }
+  }
+</script>

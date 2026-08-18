@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-10T07:29:29Z",
+  "title": "Design System: DSU Platinum — Affiliate-Partnerprogramm",
+  "extensions": {
+    "colorMeta": {
+      "gold": {
+        "role": "primary",
+        "displayName": "Champagne Gold",
+        "canonical": "#d9bd85",
+        "tonalRamp": ["#3a2d12", "#654e1f", "#906f2d", "#bb903a", "#cda960", "#dbc08a", "#e9d9b9", "#f7f0e4"]
+      },
+      "gold-hi": { "role": "primary", "displayName": "Champagne Gold — Hi", "canonical": "#f3e7cd" },
+      "white-hi": {
+        "role": "secondary",
+        "displayName": "White — Hi (glow core only)",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#1a1a1a", "#333333", "#4d4d4d", "#666666", "#999999", "#cccccc", "#e6e6e6", "#ffffff"]
+      },
+      "emerald": {
+        "role": "secondary",
+        "displayName": "Emerald (trust/security only)",
+        "canonical": "#2fa373",
+        "tonalRamp": ["#113b2a", "#1e6749", "#2a9267", "#37be86", "#5dd0a0", "#88ddba", "#b8ead5", "#e3f7ef"]
+      },
+      "emerald-hi": { "role": "secondary", "displayName": "Emerald — Hi", "canonical": "#79ddae" },
+      "navy-950": { "role": "neutral", "displayName": "Navy — 950", "canonical": "#05060a" },
+      "navy-900": { "role": "neutral", "displayName": "Navy — 900", "canonical": "#0a0c14" },
+      "navy-800": { "role": "neutral", "displayName": "Navy — 800", "canonical": "#10131f" },
+      "navy-700": { "role": "neutral", "displayName": "Navy — 700", "canonical": "#171b2a" },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#f5f1e8",
+        "tonalRamp": ["#05060a", "#171b2a", "#282d40", "#4a4f66", "#7c7f92", "#a8abb8", "#d3d5db", "#f5f1e8"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headline; emphasis word glows (gold + white core)." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles." },
+      "title": { "displayName": "Title", "purpose": "Card- and step-level sub-headings." },
+      "body": { "displayName": "Body", "purpose": "Paragraph copy, ink/74 opacity." },
+      "label": { "displayName": "Label", "purpose": "Uppercase eyebrows, nav links, badges, captions — gold." },
+      "stat": { "displayName": "Stat", "purpose": "Oversized benefit numerals/words, gold with catching-light glow." }
+    },
+    "shadows": [
+      { "name": "button-rest", "value": "0 10px 38px rgba(217,189,133,0.32), 0 0 60px rgba(217,189,133,0.16)", "purpose": "Primary CTA at rest — directional lift plus ambient halo." },
+      { "name": "button-hover", "value": "0 18px 54px rgba(217,189,133,0.48), 0 0 90px rgba(217,189,133,0.26)", "purpose": "Primary CTA on hover." },
+      { "name": "card-rest", "value": "0 0 44px rgba(217,189,133,0.10)", "purpose": "Benefit card ambient glow at rest — new in this iteration, not hover-only." },
+      { "name": "card-hover", "value": "0 20px 54px rgba(217,189,133,0.30), 0 0 80px rgba(217,189,133,0.20)", "purpose": "Benefit card hover glow." },
+      { "name": "video-frame", "value": "0 24px 70px rgba(217,189,133,0.22), 0 0 100px rgba(217,189,133,0.12)", "purpose": "Video frame's always-on, widest ambient halo on the page." },
+      { "name": "cta-panel", "value": "0 0 90px rgba(217,189,133,0.18)", "purpose": "CTA panel's outer glow — the vault door, lit from within." },
+      { "name": "hero-portrait", "value": "0 0 60px rgba(217,189,133,0.3), 0 24px 70px rgba(0,0,0,0.5)", "purpose": "Hero portrait frame glow." },
+      { "name": "steps-line-glow", "value": "0 0 14px rgba(217,189,133,0.85), 0 0 34px rgba(217,189,133,0.5), 0 0 60px rgba(47,163,115,0.25)", "purpose": "Scroll-scrubbed steps line — White-to-Gold-to-Emerald-Hi gradient, the most dramatic glow on the page." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.22, 0.61, 0.36, 1)", "purpose": "Scroll-reveal fade + slide-up transitions (700ms)." },
+      { "name": "ease-interaction", "value": "ease-out", "purpose": "Hover/focus transitions (250-300ms)." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Gold gradient CTA with directional lift-shadow plus ambient halo, intensifying further on hover.",
+      "html": "<a href=\"#\" class=\"ds-btn-primary\"><span>Jetzt Partner werden</span><svg class=\"ds-btn-primary__icon\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M5 12h14M13 6l6 6-6 6\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 10px; border-radius: 10px; border: 1px solid #d9bd85; padding: 16px 28px; font-weight: 500; font-size: 16px; color: #05060a; background: linear-gradient(to bottom, #f3e7cd, #d9bd85); box-shadow: 0 10px 38px rgba(217,189,133,0.32), 0 0 60px rgba(217,189,133,0.16); transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, filter 0.25s ease-out; } .ds-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 54px rgba(217,189,133,0.48), 0 0 90px rgba(217,189,133,0.26); filter: brightness(1.1); } .ds-btn-primary:focus-visible { outline: 2px solid #d9bd85; outline-offset: 3px; box-shadow: 0 0 0 5px rgba(217,189,133,0.22); }"
+    },
+    {
+      "name": "Benefit Card",
+      "kind": "card",
+      "refersTo": "card-benefit",
+      "description": "Banknote-styled stat card, gold border, ambient glow at rest that widens on hover, catching-light numeral.",
+      "html": "<article class=\"ds-card-benefit\"><div class=\"ds-card-benefit__watermark\"></div><div class=\"ds-card-benefit__top\"><span class=\"ds-card-benefit__icon\">€</span><span class=\"ds-card-benefit__label\">Bonus</span></div><p class=\"ds-card-benefit__stat\">300 $</p><p class=\"ds-card-benefit__text\">Direkte Auszahlung in Cash für jede erfolgreiche Empfehlung.</p></article>",
+      "css": ".ds-card-benefit { position: relative; overflow: hidden; border-radius: 16px; border: 1px solid rgba(217,189,133,0.4); background: linear-gradient(to bottom right, #171b2a, #05060a); padding: 30px 26px; box-shadow: 0 0 44px rgba(217,189,133,0.10); transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out; } .ds-card-benefit:hover { transform: scale(1.03); border-color: #d9bd85; box-shadow: 0 20px 54px rgba(217,189,133,0.30), 0 0 80px rgba(217,189,133,0.20); } .ds-card-benefit__watermark { position: absolute; inset: 0; opacity: 0.5; background-image: repeating-linear-gradient(45deg, rgba(217,189,133,0.07) 0 1px, transparent 1px 9px), repeating-linear-gradient(-45deg, rgba(217,189,133,0.06) 0 1px, transparent 1px 9px); } .ds-card-benefit__top { position: relative; display: flex; align-items: center; justify-content: space-between; } .ds-card-benefit__icon { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 10px; border: 1px solid rgba(217,189,133,0.4); background: rgba(217,189,133,0.1); color: #d9bd85; box-shadow: 0 0 16px rgba(217,189,133,0.25); } .ds-card-benefit__label { font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(245,241,232,0.6); } .ds-card-benefit__stat { position: relative; font-weight: 500; font-size: 48px; line-height: 1; letter-spacing: -0.03em; margin-top: 26px; color: #d9bd85; font-variant-numeric: tabular-nums; text-shadow: 0 0 30px rgba(217,189,133,0.45), 0 0 4px rgba(255,255,255,0.2); } .ds-card-benefit__text { position: relative; font-size: 15.5px; line-height: 1.6; color: rgba(245,241,232,0.74); margin-top: 14px; }"
+    },
+    {
+      "name": "Hero Portrait Frame",
+      "kind": "custom",
+      "refersTo": "hero-portrait",
+      "description": "Gold-framed, glowing square portrait of Manjeet beside the hero headline — the page's personal, exclusive-feeling first moment.",
+      "html": "<div class=\"ds-hero-portrait\"><img src=\"manjeet-cta-portrait.avif\" alt=\"Manjeet Singh Sanga, Gründer von DSU Platinum\" /><div class=\"ds-hero-portrait__sheen\"></div></div>",
+      "css": ".ds-hero-portrait { position: relative; aspect-ratio: 1; border-radius: 20px; overflow: hidden; border: 1px solid rgba(217,189,133,0.6); box-shadow: 0 0 60px rgba(217,189,133,0.3), 0 24px 70px rgba(0,0,0,0.5); } .ds-hero-portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; } .ds-hero-portrait__sheen { position: absolute; inset: 0; background: linear-gradient(200deg, transparent 45%, rgba(5,6,10,0.55) 100%), radial-gradient(120% 90% at 100% 0%, rgba(217,189,133,0.22), transparent 55%); }"
+    },
+    {
+      "name": "Step Marker",
+      "kind": "custom",
+      "refersTo": "step-marker",
+      "description": "Numbered dark chip in the four-step guide, now with its own glow — gold for in-progress, emerald for the final step.",
+      "html": "<span class=\"ds-step-marker\">1</span>",
+      "css": ".ds-step-marker { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 9999px; background: #05060a; font-weight: 500; font-size: 17px; font-variant-numeric: tabular-nums; border: 1px solid #d9bd85; color: #d9bd85; box-shadow: 0 0 20px rgba(217,189,133,0.3); } .ds-step-marker--final { border-color: #2fa373; color: #79ddae; box-shadow: 0 0 20px rgba(47,163,115,0.35); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Illuminated Vault",
+    "overview": "Back to the vault, deliberately — and turned up. This is the third iteration of the system: it started dark and private, moved into daylight as an open ledger, and now returns to the dark private-banking world with more light inside it, not less. Every gold surface earns a glow now, not just on hover; a white-hot core sits inside several of those glows, so gold reads as catching real light rather than sitting flat. The hero now opens with Manjeet's own portrait in a glowing gold frame beside the headline — the exclusivity is personal, not abstract.",
+    "keyCharacteristics": [
+      "Near-black navy base with a warm off-white ink for body text — unchanged since the system's first version.",
+      "Gold now carries a genuine second accent partner: crisp White, used sparingly inside glow cores and text-shadows for a catching-light effect.",
+      "Glow is no longer purely hover-triggered — cards, the CTA panel, the video frame, and the steps line all carry a persistent ambient glow at rest.",
+      "A large, gold-framed portrait of Manjeet anchors the hero next to the headline.",
+      "Same fluid clamp()-based type and spacing scale throughout all three iterations; only color and light intensity changed."
+    ],
+    "rules": [
+      { "name": "The Single Accent Rule", "body": "Gold is the only decorative hue; emerald stays reserved for trust/security.", "section": "colors" },
+      { "name": "The Catching-Light Rule", "body": "Any gold text or glow gets a thin white-hot core layered underneath the wider gold glow. Gold alone reads flat; gold-plus-white-core reads like foil catching a real light source.", "section": "colors" },
+      { "name": "The Illuminated-Vault Rule", "body": "Glow is now ambient-plus-interactive, not interactive-only: every gold surface has some glow at rest, and gets brighter on hover/scroll/focus.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do pair every gold text/border/fill with a glow (ambient at rest, intensified on interaction).",
+      "Do use White strictly inside glow cores and text-shadows, never as a standalone fill, border, or body-text color.",
+      "Do keep emerald reserved for trust/security meaning only.",
+      "Do size any future hero/portrait imagery to at least the display resolution needed."
+    ],
+    "donts": [
+      "Don't revert to hover-only glow; ambient-at-rest glow is now the baseline.",
+      "Don't introduce a second typeface or a third accent hue.",
+      "Don't stretch or off-center-crop the hero portrait — its aspect-square frame exists so the 1:1 source needs no cropping."
+    ]
+  }
+}

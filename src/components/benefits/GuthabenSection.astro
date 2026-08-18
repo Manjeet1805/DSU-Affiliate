@@ -1,0 +1,120 @@
+---
+---
+
+<section
+  id="benefit-guthaben"
+  class="relative px-[clamp(20px,5vw,64px)] min-h-[100svh] flex flex-col justify-center py-7 md:py-0 md:h-screen md:block"
+>
+  <div class="relative z-10 max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center md:h-full">
+    <div
+      id="guthaben-icon-slot"
+      class="order-2 md:order-1 relative h-[180px] sm:h-[260px] md:h-[340px] flex items-center justify-center"
+      style="perspective: 1000px;"
+    >
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute size-[70%] rounded-full"
+        style="background:radial-gradient(closest-side, rgba(217,189,133,.22), transparent 72%)"
+      >
+      </div>
+
+      <div id="guthaben-camera-wrap" class="relative w-[68%] max-w-[300px]">
+        <svg id="guthaben-camera-icon" viewBox="0 0 220 160" class="w-full h-auto" aria-hidden="true">
+          <defs>
+            <radialGradient id="guthabenLensGlow" cx="50%" cy="45%" r="60%">
+              <stop offset="0%" stop-color="#f3e7cd" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#d9bd85" stop-opacity="0" />
+            </radialGradient>
+            <linearGradient id="guthabenBodyFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#10131f" stop-opacity="0.75" />
+              <stop offset="100%" stop-color="#05060a" stop-opacity="0.55" />
+            </linearGradient>
+          </defs>
+
+          <rect x="30" y="55" width="160" height="88" rx="16" fill="url(#guthabenBodyFill)" stroke="#d9bd85" stroke-width="2.5" />
+          <rect x="92" y="32" width="50" height="28" rx="8" fill="url(#guthabenBodyFill)" stroke="#d9bd85" stroke-width="2.5" />
+
+          <circle cx="110" cy="99" r="38" fill="#05060a" fill-opacity="0.5" stroke="#d9bd85" stroke-width="2.5" />
+          <circle cx="110" cy="99" r="26" fill="none" stroke="#d9bd85" stroke-width="1.5" stroke-opacity="0.7" />
+          <circle cx="110" cy="99" r="15" fill="url(#guthabenLensGlow)" />
+
+          <g stroke="#d9bd85" stroke-width="1.3" stroke-opacity="0.45" stroke-linecap="round">
+            <line x1="110" y1="79" x2="110" y2="91" />
+            <line x1="127.5" y1="89" x2="120" y2="95" />
+            <line x1="127.5" y1="109" x2="120" y2="103" />
+            <line x1="110" y1="119" x2="110" y2="107" />
+            <line x1="92.5" y1="109" x2="100" y2="103" />
+            <line x1="92.5" y1="89" x2="100" y2="95" />
+          </g>
+
+          <rect x="150" y="40" width="20" height="11" rx="3" fill="none" stroke="#d9bd85" stroke-width="2" />
+          <circle cx="176" cy="66" r="4" fill="#d9bd85" />
+          <circle cx="44" cy="55" r="2.6" fill="#d9bd85" fill-opacity="0.6" />
+          <circle cx="176" cy="55" r="2.6" fill="#d9bd85" fill-opacity="0.6" />
+        </svg>
+      </div>
+    </div>
+
+    <div data-reveal class="order-1 md:order-2">
+      <p class="flex items-center gap-3 mb-4 text-[13px] tracking-[0.2em] uppercase text-gold">
+        <span class="w-9 h-px bg-gold block"></span>
+        Credit
+      </p>
+      <p
+        class="font-medium text-[clamp(64px,10vw,128px)] leading-none tracking-[-0.03em] text-gold tabular-nums"
+        style="text-shadow:0 0 40px rgba(217,189,133,.4), 0 0 6px rgba(255,255,255,.25)"
+      >
+        100 $
+      </p>
+      <p class="text-[clamp(17px,2vw,20px)] leading-[1.6] text-ink/80 max-w-[42ch] mt-5">
+        Noirlab credit you can use to have your own creatives produced.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const section = document.querySelector<HTMLElement>("#benefit-guthaben");
+  const wrap = document.querySelector<HTMLElement>("#guthaben-camera-wrap");
+
+  if (section && wrap) {
+    if (reduceMotion) {
+      gsap.set(wrap, { rotateX: 5, rotateY: -7, rotateZ: 0, scale: 1, opacity: 1 });
+    } else {
+      // A calm, single tilt-and-settle — starts a bit further off its
+      // rest pose than before for a more noticeable rotation, while
+      // still staying well short of the earlier over-animated attempts.
+      gsap.set(wrap, {
+        rotateX: 19,
+        rotateY: -27,
+        rotateZ: -4,
+        scale: 0.94,
+        opacity: 0.78,
+        transformPerspective: 900,
+      });
+
+      gsap.to(wrap, {
+        rotateX: 5,
+        rotateY: -7,
+        rotateZ: 0,
+        scale: 1,
+        opacity: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "+=45%",
+          scrub: 0.6,
+          pin: true,
+          anticipatePin: 1,
+        },
+      });
+    }
+  }
+</script>

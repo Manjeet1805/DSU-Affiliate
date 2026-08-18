@@ -1,0 +1,24 @@
+---
+import { Image } from "astro:assets";
+import logoSrc from "../assets/images/dsu_logo.png";
+---
+
+<nav class="absolute top-0 inset-x-0 z-20 flex items-center justify-between gap-4 px-[clamp(20px,5vw,64px)] py-5">
+  <Image
+    src={logoSrc}
+    alt="DSU Platinum"
+    width={440}
+    height={128}
+    loading="eager"
+    class="h-10 sm:h-11 w-auto drop-shadow-[0_2px_10px_rgba(0,0,0,.6)]"
+  />
+  <a
+    href="#partner-werden"
+    class="btn-glow font-medium text-[13.5px] tracking-[0.06em] px-4.5 py-3 rounded-lg border border-gold/34 bg-navy-950/25 backdrop-blur-sm text-gold
+      transition-[border-color,background-color,color,box-shadow] duration-250 ease-out
+      hover:border-gold hover:bg-gold/8 hover:text-gold-hi hover:shadow-[0_0_24px_rgba(217,189,133,.35)]"
+  >
+    <span class="btn-glow-light" aria-hidden="true"></span>
+    Become a Partner
+  </a>
+</nav>

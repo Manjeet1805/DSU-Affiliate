@@ -1,6 +1,9 @@
 ---
-const days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
-const activeDays = new Set(["Mo", "We", "Fr"]);
+const envelopes = [
+  { id: 0, width: "w-[32vw] max-w-[140px] sm:max-w-[160px]", wrap: "-mr-[8%]" },
+  { id: 1, width: "w-[34vw] max-w-[150px] sm:max-w-[172px]", wrap: "mb-4 sm:mb-6" },
+  { id: 2, width: "w-[32vw] max-w-[140px] sm:max-w-[160px]", wrap: "-ml-[8%]" },
+];
 ---
 
 <section
@@ -14,46 +17,47 @@ const activeDays = new Set(["Mo", "We", "Fr"]);
         Access
       </p>
       <h3
-        class="font-medium text-[clamp(56px,9vw,112px)] leading-none tracking-[-0.03em] text-gold"
+        id="zugang-count"
+        class="font-medium text-[clamp(56px,9vw,112px)] leading-none tracking-[-0.03em] text-gold tabular-nums"
         style="text-shadow:0 0 40px rgba(217,189,133,.4), 0 0 6px rgba(255,255,255,.25)"
       >
-        3×/Week
+        0×
       </h3>
+      <p class="text-[13px] tracking-[0.14em] uppercase text-ink/50 mt-2">
+        Per week
+      </p>
       <p class="text-[clamp(17px,2vw,20px)] leading-[1.6] text-ink/80 max-w-[42ch] mt-5">
         Access to the winning-product newsletter — otherwise reserved for
-        Gold customers. Products hand-picked by Manjeet, three times a week.
+        Gold customers. Three times a week, products hand-picked by Manjeet,
+        delivered straight to your inbox.
       </p>
     </div>
 
-    <div id="zugang-streak" class="flex flex-wrap justify-center md:justify-end gap-4 sm:gap-5">
-      {
-        days.map((day) => {
-          const active = activeDays.has(day);
-          return (
-            <div class:list={["streak-day flex flex-col items-center gap-2.5", !active && "opacity-35"]} data-active={active ? "true" : undefined}>
-              <span class="streak-dot relative flex items-center justify-center size-14 sm:size-16 rounded-full border border-gold/30 bg-navy-900">
-                <svg viewBox="0 0 24 24" fill="none" class="streak-check size-6 text-navy-950" aria-hidden="true">
-                  <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </span>
-              <span class="text-[11px] tracking-[0.14em] uppercase text-ink/50">{day}</span>
+    <div id="zugang-envelopes" class="relative h-[190px] sm:h-[240px] md:h-[300px] flex items-center justify-center">
+      <div class="flex items-end">
+        {
+          envelopes.map((env) => (
+            <div class={`zugang-env relative ${env.width} ${env.wrap}`} style={`z-index:${env.id === 1 ? 3 : env.id + 1}`}>
+              <svg viewBox="0 0 160 120" class="w-full h-auto" aria-hidden="true">
+                <defs>
+                  <linearGradient id={`envBodyFill-${env.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#10131f" stop-opacity="0.75" />
+                    <stop offset="100%" stop-color="#05060a" stop-opacity="0.55" />
+                  </linearGradient>
+                </defs>
+                <rect x="4" y="14" width="152" height="100" rx="12" fill={`url(#envBodyFill-${env.id})`} stroke="#d9bd85" stroke-width="2.5" />
+                <path d="M8 20 L80 74 L152 20" fill="none" stroke="#d9bd85" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                <circle cx="128" cy="96" r="18" fill="#d9bd85" />
+                <path d="M121 93 h14 l-1.6 11.5 a2 2 0 0 1 -2 1.7 h-6.8 a2 2 0 0 1 -2 -1.7 Z" fill="none" stroke="#0b0d16" stroke-width="1.7" stroke-linejoin="round" />
+                <path d="M124.2 93 v-2.4 a3.8 3.8 0 0 1 7.6 0 v2.4" fill="none" stroke="#0b0d16" stroke-width="1.7" stroke-linecap="round" />
+              </svg>
             </div>
-          );
-        })
-      }
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
-
-<style>
-  .streak-dot {
-    transition: none;
-  }
-  .streak-check {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-</style>
 
 <script>
   import { gsap } from "gsap";
@@ -63,15 +67,39 @@ const activeDays = new Set(["Mo", "We", "Fr"]);
 
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const section = document.querySelector<HTMLElement>("#benefit-zugang");
-  const dots = document.querySelectorAll<HTMLElement>('#zugang-streak .streak-day[data-active="true"] .streak-dot');
-  const checks = document.querySelectorAll<HTMLElement>('#zugang-streak .streak-day[data-active="true"] .streak-check');
+  const envs = document.querySelectorAll<HTMLElement>(".zugang-env");
+  const counterEl = document.querySelector<HTMLElement>("#zugang-count");
 
-  if (section && dots.length) {
+  const REST_ROTATION = [-9, 2, 9];
+  const ENTRY_ROTATION = [-27, 24, 29];
+  const ENTRY_X = [-1, 0, 1];
+
+  if (section && envs.length && counterEl) {
     if (reduceMotion) {
-      gsap.set(dots, { backgroundColor: "#d9bd85", borderColor: "#d9bd85" });
-      gsap.set(checks, { opacity: 1, scale: 1 });
+      envs.forEach((env, i) => {
+        gsap.set(env, { x: 0, y: 0, rotation: REST_ROTATION[i], scale: 1, opacity: 1 });
+      });
+      counterEl.textContent = "3×";
     } else {
       const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+      const travelX = isDesktop ? 56 : 32;
+      const travelY = isDesktop ? 70 : 44;
+      const STAGGER = 0.3;
+      const DUR = 0.6;
+      const TOTAL = (envs.length - 1) * STAGGER + DUR;
+
+      envs.forEach((env, i) => {
+        gsap.set(env, {
+          x: ENTRY_X[i] * travelX,
+          y: travelY,
+          rotation: ENTRY_ROTATION[i],
+          scale: 0.7,
+          opacity: 0,
+        });
+      });
+
+      const counter = { val: 0 };
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -83,13 +111,25 @@ const activeDays = new Set(["Mo", "We", "Fr"]);
         },
       });
 
-      dots.forEach((dot, i) => {
+      tl.to(
+        counter,
+        {
+          val: 3,
+          ease: "none",
+          duration: TOTAL,
+          onUpdate: () => {
+            counterEl.textContent = `${Math.round(counter.val)}×`;
+          },
+        },
+        0,
+      );
+
+      envs.forEach((env, i) => {
         tl.to(
-          dot,
-          { backgroundColor: "#d9bd85", borderColor: "#d9bd85", scale: 1.08, ease: "none" },
-          i * 0.28,
-        ).to(dot, { scale: 1, ease: "none" }, i * 0.28 + 0.08);
-        tl.to(checks[i], { opacity: 1, scale: 1, ease: "none" }, i * 0.28 + 0.04);
+          env,
+          { x: 0, y: 0, rotation: REST_ROTATION[i], scale: 1, opacity: 1, ease: "none", duration: DUR },
+          i * STAGGER,
+        );
       });
     }
   }
